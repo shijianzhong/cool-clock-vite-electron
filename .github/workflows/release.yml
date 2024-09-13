@@ -1,54 +1,45 @@
 name: Release
 
 on: push
+  # push:
+  #   tags:
+  #     - 'v*' # 在推送的标签以"v"开头时执行
 
 jobs:
-    release:
-        name: build and release electron app
-        runs-on: ${{ matrix.os }}
-        
+  build:
+    runs-on: ${{ matrix.os }} # 使用矩阵策略来确定操作系统
     strategy:
-        fail-fast: false
-        matrix:
-          os: [windows-latest, macos-latest, ubuntu-latest]
-            
+      matrix: # 这个定义会启用2个系统进行打包
+        os: [macos-latest, windows-latest]
+
     steps:
-        - name: Checkout code
-          uses: actions/checkout@v3
-        
-        - name: Install Node.js
-          uses: actions/setup-node@v3
-          with:
-            node-version: 18
-            
-        - name: Install Dependencies
-          run: npm install
-          
-        - name: Build Electron App
-          run: npm run dist
-          env:
-            GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        
-        - name: Cleanup Artifacts for Windows
-          if: matrix.os == 'windows-latest'
-          run: |
-            npx rimraf "dist/!(*.exe)"
-        
-        - name: Cleanup Artifacts for MacOS
-          if: matrix.os == 'macos-latest'
-          run: |
-            npx rimraf "dist/!(*.dmg)"
-            
-        - name: upload artifacts
-          uses: actions/upload-artifact@v3.0.0
-          with:
-            name: ${{ matrix.os }}
-            path: dist
-            
-        - name: release
-          uses: softprops/action-gh-release@v0.1.14
-          if: startsWith(github.ref, 'refs/tags/')
-          with:
-            files: "dist/**"
-          env:
-            GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Electron package
+        # 不同系统会对应打包出不同类型安装包，打包完成会自动生成 Releases 草稿
+        run: npm run build
+        env:
+          GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Publish release
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        # 编辑 Releases 草稿并发布
+        run: gh release edit ${{ github.ref_name }} --draft=false
+        env:
+          GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
