@@ -1,0 +1,89 @@
+{
+  "name": "cool-clock-vite-electron",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build && electron-builder",
+    "preview": "vite preview",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder -p always"  
+  },
+  "dependencies": {
+    "vue": "^3.4.21"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.4",
+    "typescript": "^5.2.2",
+    "vite": "^5.1.6",
+    "vue-tsc": "^2.0.26",
+    "electron": "^30.0.1",
+    "electron-builder": "^24.13.3",
+    "vite-plugin-electron": "^0.28.6",
+    "vite-plugin-electron-renderer": "^0.14.5"
+  },
+  "main": "dist-electron/main.js",
+  "build": {
+    "appId": "coolClock", 
+    "productName": "cool-clock", 
+    "files": [ 
+      "build/**/*",
+      "node_modules/**/*",
+      "package.json",
+      "main.js",
+      "preload.js"
+    ],
+    "directories": { 
+      "output": "dist",
+      "buildResources": "assets"
+    },
+    "extends": null,
+    "mac": {
+      "category": "public.app-category.productivity",
+      "artifactName": "${productName}-${version}-${arch}.${ext}",
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "dmg": { 
+      "background": "assets/logo.png",
+      "icon": "assets/icon.icns",
+      "iconSize": 100,
+      "contents": [ 
+        {
+          "x": 380,
+          "y": 280,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 110,
+          "y": 280,
+          "type": "file"
+        }
+      ],
+      "window": {
+        "width": 500,
+        "height": 500
+      }
+    },
+    "win": { 
+      "target": [
+        "msi",
+        "nsis",
+        "zip"
+      ],
+      "verifyUpdateCodeSignature": false, 
+      "icon": "assets/icon.ico",
+      "artifactName": "${productName}-Web-Setup-${version}.${ext}"
+    },
+    "nsis": { 
+      "allowToChangeInstallationDirectory": false,
+      "oneClick": false,
+      "perMachine": false
+    },
+    "asar": false
+  }
+}

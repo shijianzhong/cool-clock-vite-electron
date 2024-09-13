@@ -1,0 +1,41 @@
+@import url('https://fonts.cdnfonts.com/css/lcd');
+
+
+*{
+    box-sizing: border-box;
+}
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+body {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    background-color: transparent;
+    /* background: linear-gradient(#040909 60vh, #312c2a 80vh); */
+    font-family: 'LCD', sans-serif;
+    font-family: 'LCD2', sans-serif;
+    font-family: 'LCDMono2', sans-serif;
+    font-family: 'LCDMono', sans-serif;
+    font-family: 'Digitalism', sans-serif;
+
+    --_refl:#f3eeef;
+
+    --_bloom:#fcfbf9;
+    --_y1:#fae8a5;
+    --_y2:#fbd608;
+
+    --_o1:#ff8f0c;
+    --_o2:#e74702;
+    --_o3:#b32801;
+
+    --mw1:#d0d5d7;
+    
+    --m1:#fdea09;
+    --m2:#e46703;
+    --m3:#ac2a04;
+}
